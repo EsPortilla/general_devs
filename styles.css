@@ -179,10 +179,10 @@ body {
     text-transform: uppercase;
 }
 
-.stage-concept { background: #dbeafe; color: #1e40af; }
-.stage-preclinical { background: #fef3c7; color: #92400e; }
-.stage-clinical { background: #e0e7ff; color: #3730a3; }
-.stage-regulatory { background: #fce7f3; color: #9f1239; }
+.stage-ideation { background: #dbeafe; color: #1e40af; }
+.stage-validation { background: #fef3c7; color: #92400e; }
+.stage-development { background: #e0e7ff; color: #3730a3; }
+.stage-testing { background: #fce7f3; color: #9f1239; }
 .stage-launch { background: #fef9c3; color: #854d0e; }
 .stage-market { background: #d1fae5; color: #065f46; }
 
