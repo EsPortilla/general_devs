@@ -206,7 +206,7 @@ class IdeaMarketApp {
 
         this.dataStore.addIdea(formData);
         this.switchView('dashboard');
-        this.showNotification('Idea created successfully!');
+        this.showNotification('Product development created successfully!');
     }
 
     renderDashboard() {
@@ -216,8 +216,8 @@ class IdeaMarketApp {
         if (ideas.length === 0) {
             grid.innerHTML = `
                 <div class="empty-state" style="grid-column: 1/-1;">
-                    <h3>No Ideas Yet</h3>
-                    <p>Start by creating your first idea!</p>
+                    <h3>No Products in Pipeline</h3>
+                    <p>Start by creating your first product development!</p>
                 </div>
             `;
             return;
@@ -385,11 +385,11 @@ class IdeaMarketApp {
     }
 
     deleteIdea(ideaId) {
-        if (confirm('Are you sure you want to delete this idea? This will also delete all associated tasks.')) {
+        if (confirm('Are you sure you want to delete this product? This will also delete all associated development tasks.')) {
             this.dataStore.deleteIdea(ideaId);
             this.renderDashboard();
             this.updateStats();
-            this.showNotification('Idea deleted successfully');
+            this.showNotification('Product deleted successfully');
         }
     }
 
@@ -410,14 +410,14 @@ class IdeaMarketApp {
         const taskIdeaSelect = document.getElementById('task-idea');
 
         const options = [
-            '<option value="all">All Ideas</option>',
+            '<option value="all">All Products</option>',
             ...this.dataStore.ideas.map(idea =>
                 `<option value="${idea.id}">${idea.name}</option>`
             )
         ].join('');
 
         select.innerHTML = options;
-        taskIdeaSelect.innerHTML = '<option value="">Select an idea</option>' +
+        taskIdeaSelect.innerHTML = '<option value="">Select a product</option>' +
             this.dataStore.ideas.map(idea =>
                 `<option value="${idea.id}">${idea.name}</option>`
             ).join('');
@@ -432,7 +432,7 @@ class IdeaMarketApp {
         if (taskId) {
             const task = this.dataStore.tasks.find(t => t.id === taskId);
             if (task) {
-                document.getElementById('modal-title').textContent = 'Edit Task';
+                document.getElementById('modal-title').textContent = 'Edit Development Task';
                 document.getElementById('task-idea').value = task.ideaId;
                 document.getElementById('task-name').value = task.name;
                 document.getElementById('task-description').value = task.description || '';
@@ -443,7 +443,7 @@ class IdeaMarketApp {
                 document.getElementById('task-dependencies').value = task.dependencies?.join(', ') || '';
             }
         } else {
-            document.getElementById('modal-title').textContent = 'Add Task';
+            document.getElementById('modal-title').textContent = 'Add Development Task';
             form.reset();
         }
 
@@ -472,10 +472,10 @@ class IdeaMarketApp {
 
         if (this.editingTaskId) {
             this.dataStore.updateTask(this.editingTaskId, taskData);
-            this.showNotification('Task updated successfully!');
+            this.showNotification('Development task updated successfully!');
         } else {
             this.dataStore.addTask(taskData);
-            this.showNotification('Task created successfully!');
+            this.showNotification('Development task created successfully!');
         }
 
         this.closeTaskModal();
@@ -506,7 +506,7 @@ class IdeaMarketApp {
 
     createTaskCard(task) {
         const idea = this.dataStore.getIdea(task.ideaId);
-        const ideaName = idea ? idea.name : 'Unknown Idea';
+        const ideaName = idea ? idea.name : 'Unknown Product';
 
         return `
             <div class="task-card priority-${task.priority}" data-id="${task.id}" draggable="true">
@@ -584,11 +584,11 @@ class IdeaMarketApp {
     }
 
     deleteTask(taskId) {
-        if (confirm('Are you sure you want to delete this task?')) {
+        if (confirm('Are you sure you want to delete this development task?')) {
             this.dataStore.deleteTask(taskId);
             this.renderTaskBoard();
             this.updateStats();
-            this.showNotification('Task deleted successfully');
+            this.showNotification('Development task deleted successfully');
         }
     }
 
