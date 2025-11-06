@@ -1,20 +1,39 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: parseInt(process.env.EMAIL_PORT || '587'),
-  secure: process.env.EMAIL_PORT === '465', // true for 465, false for other ports
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+// Create transporter based on configuration
+let transporter;
+
+if (process.env.SENDGRID_API_KEY) {
+  // Use SendGrid (recommended for Render.com and similar platforms)
+  console.log('Using SendGrid for email delivery');
+  transporter = nodemailer.createTransport({
+    host: 'smtp.sendgrid.net',
+    port: 587,
+    secure: false,
+    auth: {
+      user: 'apikey',
+      pass: process.env.SENDGRID_API_KEY,
+    },
+  });
+} else {
+  // Use traditional SMTP (Gmail, etc.)
+  console.log('Using SMTP for email delivery');
+  transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: parseInt(process.env.EMAIL_PORT || '587'),
+    secure: process.env.EMAIL_PORT === '465',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+}
 
 // Verify transporter configuration
 transporter.verify((error, success) => {
   if (error) {
     console.error('Email transporter error:', error);
+    console.log('Email will still attempt to send on demand');
   } else {
     console.log('Email server is ready to send messages');
   }
