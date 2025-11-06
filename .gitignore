@@ -31,3 +31,19 @@ coverage/
 # Temporary files
 *.tmp
 .cache/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Certificates (sensitive)
+certificates/
+*.p12
+*.pem
+*.key
+*.crt
+*.cer
+
+# Service account keys
+*service-account*.json
