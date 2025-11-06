@@ -1,263 +1,382 @@
-# Pharmaceutical Development - Idea to Market Platform
+# Event Registration System
 
-A comprehensive web-based application for managing pharmaceutical product development from concept to commercialization, with specialized support for FDF, API, and Innovation pipelines.
+Sistema completo de registro para eventos con generación de códigos QR, envío automático de correos, y passes para móviles.
 
-## Overview
+## 🎯 Características
 
-Pharmaceutical Development is a lightweight, browser-based project management tool designed specifically for pharmaceutical companies, R&D teams, and drug development professionals. The application provides intuitive interfaces for tracking products through the development lifecycle, managing clinical milestones, and orchestrating complex development tasks—all without requiring backend infrastructure.
+- ✅ **Registro de Asistentes**: Formulario web simple para registrarse al evento
+- 📧 **Email Automático**: Envío de confirmación con código QR al registrarse
+- 🔔 **Recordatorios**: Email recordatorio 1 día antes del evento
+- 📱 **Mobile Ticket**: Ticket HTML optimizado para guardar en el móvil
+- 🎫 **Códigos QR**: Generación automática de QR personalizados
+- 📊 **Panel Admin**: Dashboard para ver estadísticas y lista de asistentes
+- ❌ **Cancelaciones**: Opción para cancelar asistencia desde el email
+- ✅ **Confirmaciones**: Confirmar asistencia antes del evento
+- 📥 **Exportar**: Exportar lista de asistentes en formato CSV
+- 🔐 **Seguridad**: Panel de administración protegido con contraseña
 
-## Features
-
-### Product Development Management
-- **Comprehensive Product Capture**: Track complete product information including:
-  - Product information (name, description, formulation details)
-  - Product type classification (FDF, API, Innovation, Generic, Biosimilar, Device)
-  - Clinical and therapeutic area details
-  - Development budget and timeline
-  - Clinical/commercial endpoints
-  - Development team composition
-  - Regulatory tags and notes
-- **Pipeline Dashboard**: Visual overview of all products with development progress tracking
-- **Detailed Product Views**: Comprehensive product profiles with full regulatory and clinical metadata
-- **Development Stage Tracking**: Monitor products through 6 critical development stages:
-  - Concept/Feasibility
-  - Pre-clinical Development
-  - Clinical Development
-  - Regulatory Submission
-  - Launch Preparation
-  - Commercialized
-
-### Product Types Supported
-- **FDF (Finished Dosage Form)**: Tablets, capsules, injectables, and other final formulations
-- **API (Active Pharmaceutical Ingredient)**: Raw drug substances and active ingredients
-- **Innovation**: Novel drug development and first-in-class compounds
-- **Generic Development**: Bioequivalent and generic drug products
-- **Biosimilar**: Biological product development
-- **Device/Combination Products**: Medical devices and drug-device combinations
-
-### Development Task Orchestration
-- **Kanban-Style Task Board**: Organize development tasks and milestones across three columns:
-  - To Do
-  - In Progress
-  - Completed
-- **Drag-and-Drop Interface**: Easily move tasks between status columns as development progresses
-- **Priority Management**: Four priority levels (Low, Medium, High, Critical/Regulatory)
-- **Task Dependencies**: Track relationships and prerequisites between development activities
-- **Team Assignment**: Assign tasks to scientists and team members
-- **Target Date Tracking**: Set and monitor regulatory and development deadlines
-- **Product Filtering**: View tasks for specific products or across entire portfolio
-
-### Data Persistence
-- **Local Storage**: All data is stored in browser localStorage
-- **No Backend Required**: Fully functional without server infrastructure
-- **Export Ready**: Data structure designed for easy export/import
-- **Privacy-First**: All data remains on your local machine
-
-## Getting Started
-
-### Installation
-
-1. Clone or download this repository
-2. Open `index.html` in a modern web browser
-3. Start creating product developments and managing milestones!
-
-No build process, dependencies, or server setup required.
-
-### Quick Start Guide
-
-#### Creating Your First Product Development
-
-1. Click the "New Product" button in the navigation
-2. Fill out the product development form:
-   - Enter product/molecule name and description
-   - Select product type (FDF, API, Innovation, Generic, Biosimilar, Device, Other)
-   - Choose current development stage
-   - Define therapeutic area/indication (e.g., Cardiovascular, Oncology, CNS)
-   - Set development budget and timeline
-   - Add clinical/commercial endpoints
-   - Include development team members
-   - Add relevant tags (orphan drug, fast-track, priority review, etc.)
-   - Note any regulatory considerations or patent status
-3. Click "Create Product Development" to save
-
-#### Managing Development Tasks
-
-1. Navigate to the "Development Tasks" view
-2. Click "Add Development Task" to create a new milestone or task
-3. Fill in task details:
-   - Select the associated product
-   - Enter task/milestone name (e.g., "Complete stability studies", "Submit IND")
-   - Add task description
-   - Set priority (including Critical/Regulatory for urgent regulatory activities)
-   - Assign to team member
-   - Set target completion date
-   - Define task dependencies
-4. Drag and drop tasks between columns as work progresses
-5. Edit or delete tasks as development plans evolve
-
-#### Tracking Development Progress
-
-- View the Dashboard for an overview of your entire development pipeline
-- Check task completion percentages on product cards
-- Monitor statistics: Total Products, Active Development, Completed Milestones
-- Click on any product card to see detailed development information
-- Filter tasks by product to focus on specific development programs
-
-## File Structure
+## 📁 Estructura del Proyecto
 
 ```
 general_devs/
-├── index.html          # Main HTML structure with pharmaceutical terminology
-├── styles.css          # Complete styling optimized for pharma stages
-├── app.js              # Application logic and development data management
-├── .gitignore          # Git ignore patterns
-└── README.md           # This file
+├── backend/
+│   ├── routes/
+│   │   └── api.js              # Rutas API REST
+│   ├── services/
+│   │   ├── email.js            # Servicio de envío de emails
+│   │   ├── qr.js               # Generación de códigos QR
+│   │   └── wallet.js           # Passes para wallet (mobile ticket)
+│   ├── jobs/
+│   │   └── reminder.js         # Cron job para recordatorios
+│   ├── utils/
+│   ├── database.js             # Base de datos SQLite
+│   ├── server.js               # Servidor Express
+│   └── package.json
+├── frontend/
+│   ├── index.html              # Formulario de registro
+│   └── admin.html              # Panel de administración
+├── .env.example                # Plantilla de variables de entorno
+├── .gitignore
+└── README.md
 ```
 
-## Technology Stack
+## 🚀 Instalación
 
-- **HTML5**: Semantic markup and structure
-- **CSS3**: Modern styling with CSS Grid and Flexbox
-- **Vanilla JavaScript**: No frameworks or libraries required
-- **localStorage API**: Client-side data persistence
+### Requisitos Previos
 
-## Browser Compatibility
+- Node.js 16 o superior
+- npm o yarn
+- Cuenta de email (Gmail, SendGrid, Mailgun, etc.)
 
-The application works in all modern browsers that support:
-- ES6+ JavaScript
-- CSS Grid and Flexbox
-- localStorage API
+### Pasos de Instalación
 
-Tested and compatible with:
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+1. **Clonar el repositorio**
+```bash
+git clone <repo-url>
+cd general_devs
+```
 
-## Data Structure
+2. **Instalar dependencias del backend**
+```bash
+cd backend
+npm install
+```
 
-### Product Development Object
+3. **Configurar variables de entorno**
+```bash
+# Copiar el archivo de ejemplo
+cp ../.env.example ../.env
+
+# Editar el archivo .env con tus valores
+nano ../.env  # o usar tu editor preferido
+```
+
+4. **Configurar Email (Gmail como ejemplo)**
+
+Para usar Gmail:
+- Ve a tu cuenta de Google
+- Activa la verificación en 2 pasos
+- Genera una "Contraseña de aplicación" en: https://myaccount.google.com/apppasswords
+- Usa esa contraseña en `EMAIL_PASSWORD` del archivo `.env`
+
+Ejemplo de configuración en `.env`:
+```env
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=tu-email@gmail.com
+EMAIL_PASSWORD=xxxx-xxxx-xxxx-xxxx  # Contraseña de aplicación
+EMAIL_FROM=Event Registration <tu-email@gmail.com>
+```
+
+5. **Configurar los detalles del evento**
+
+Edita el archivo `.env` con la información de tu evento:
+```env
+EVENT_NAME=Mi Evento Increíble
+EVENT_DATE=2025-12-31T19:00:00
+EVENT_LOCATION=Calle Principal #123, Ciudad
+EVENT_DESCRIPTION=¡Únete a nosotros para una noche inolvidable!
+```
+
+6. **Configurar contraseña de administrador**
+```env
+ADMIN_PASSWORD=mi-password-seguro-123
+```
+
+## ▶️ Uso
+
+### Modo Desarrollo
+
+```bash
+cd backend
+npm run dev
+```
+
+El servidor se iniciará en `http://localhost:3000`
+
+### Modo Producción
+
+```bash
+cd backend
+npm start
+```
+
+## 🌐 Endpoints
+
+### Público
+
+- `GET /` - Formulario de registro
+- `GET /admin` - Panel de administración (requiere contraseña)
+- `POST /api/register` - Registrar nuevo asistente
+- `GET /api/confirm/:token` - Confirmar asistencia
+- `GET /api/cancel/:token` - Cancelar asistencia
+- `GET /api/wallet/:id` - Obtener ticket móvil
+- `GET /api/statistics` - Estadísticas públicas del evento
+- `GET /health` - Health check
+
+### Administración (requiere autenticación)
+
+- `GET /api/attendees?password=xxx` - Lista completa de asistentes
+- `POST /api/send-reminders` - Enviar recordatorios manualmente
+
+## 📧 Flujo de Emails
+
+### 1. Email de Confirmación
+Enviado inmediatamente después del registro:
+- ✅ Confirmación de registro exitoso
+- 📅 Detalles del evento (fecha, hora, ubicación)
+- 🎫 Código QR personalizado
+- 📱 Botón para guardar en Wallet
+- ❌ Enlace para cancelar
+
+### 2. Email de Recordatorio
+Enviado automáticamente 1 día antes del evento (9:00 AM):
+- ⏰ Recordatorio del evento
+- 🎫 Código QR (por si lo perdieron)
+- ✅ Botón para confirmar asistencia
+- ❌ Botón para cancelar si no pueden asistir
+
+### 3. Email de Cancelación
+Enviado cuando un asistente cancela:
+- ✅ Confirmación de cancelación
+- 💭 Mensaje de despedida
+
+## 🤖 Recordatorios Automáticos
+
+### Cron Job Automático
+
+El sistema verifica diariamente a las 9:00 AM si el evento es mañana. Si es así, envía recordatorios a todos los asistentes registrados que no hayan recibido el recordatorio aún.
+
+Para cambiar la hora o timezone:
+
+Edita `backend/server.js`:
 ```javascript
-{
-  id: "timestamp",
-  name: "string",                    // Product/molecule name
-  description: "string",             // Product description
-  category: "fdf|api|innovation|generic|biosimilar|device|other",
-  stage: "concept|preclinical|clinical|regulatory|launch|market",
-  targetMarket: "string",            // Therapeutic area/indication
-  budget: "number",                  // Development budget (USD)
-  timeline: "number",                // Development timeline (months)
-  successCriteria: "string",         // Clinical/commercial endpoints
-  teamMembers: ["string"],           // Development team
-  tags: ["string"],                  // Product tags (orphan drug, fast-track, etc.)
-  notes: "string",                   // Regulatory/development notes
-  createdAt: "ISO date string"
-}
+cron.schedule('0 9 * * *', () => {  // Formato: minuto hora * * *
+  // ...
+}, {
+  timezone: "America/Mexico_City"  // Cambia a tu timezone
+});
 ```
 
-### Development Task Object
+### Envío Manual
+
+También puedes enviar recordatorios manualmente desde el panel de administración o ejecutando:
+
+```bash
+cd backend
+npm run reminder
+```
+
+## 📱 Mobile Wallet
+
+El sistema genera tickets HTML optimizados para móviles que pueden guardarse en la pantalla de inicio:
+
+**iOS (Safari)**:
+1. Abrir el ticket desde el email
+2. Tocar el botón "Compartir"
+3. Seleccionar "Agregar a pantalla de inicio"
+
+**Android (Chrome)**:
+1. Abrir el ticket desde el email
+2. Tocar el menú (⋮)
+3. Seleccionar "Agregar a pantalla de inicio"
+
+### Apple Wallet y Google Wallet (Avanzado)
+
+Para producción, puedes configurar passes nativos:
+
+**Apple Wallet**:
+- Requiere Apple Developer Account ($99/año)
+- Generar certificado Pass Type ID
+- Configurar variables en `.env`:
+  ```env
+  APPLE_PASS_TYPE_ID=pass.com.tucompania.evento
+  APPLE_TEAM_ID=TU_TEAM_ID
+  APPLE_CERTIFICATE_PATH=./certificates/pass.p12
+  APPLE_CERTIFICATE_PASSWORD=password
+  ```
+
+**Google Wallet**:
+- Requiere Google Cloud Project
+- Habilitar Google Wallet API
+- Crear Service Account
+- Configurar variables en `.env`:
+  ```env
+  GOOGLE_ISSUER_ID=tu-issuer-id
+  GOOGLE_SERVICE_ACCOUNT_EMAIL=account@project.iam.gserviceaccount.com
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_PATH=./certificates/google.json
+  ```
+
+## 👨‍💼 Panel de Administración
+
+Accede a `http://localhost:3000/admin` e ingresa la contraseña configurada en `.env`.
+
+### Funcionalidades
+
+- 📊 **Estadísticas**: Total registrados, confirmados, cancelados
+- 📋 **Lista de Asistentes**: Ver todos los registrados con filtros
+- 🔍 **Búsqueda**: Buscar por nombre o email
+- 🏷️ **Filtros**: Ver por estado (todos, pendientes, confirmados, cancelados)
+- 📧 **Enviar Recordatorios**: Disparar recordatorios manualmente
+- 📥 **Exportar CSV**: Descargar lista completa en CSV
+- 🔄 **Actualizar**: Refrescar datos en tiempo real
+
+## 🗄️ Base de Datos
+
+El sistema usa SQLite para desarrollo. Los datos se almacenan en `backend/database.sqlite`.
+
+### Tabla: attendees
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| id | INTEGER | ID único |
+| first_name | TEXT | Nombre |
+| last_name | TEXT | Apellido |
+| email | TEXT | Email (único) |
+| registration_date | DATETIME | Fecha de registro |
+| status | TEXT | Estado: registered, confirmed, cancelled |
+| confirmation_token | TEXT | Token para confirmar |
+| cancellation_token | TEXT | Token para cancelar |
+| qr_code | TEXT | QR code en base64 |
+| reminder_sent | INTEGER | 0 o 1 |
+| confirmed_at | DATETIME | Fecha de confirmación |
+| cancelled_at | DATETIME | Fecha de cancelación |
+
+### Migrar a PostgreSQL (Producción)
+
+Para producción se recomienda PostgreSQL:
+
+1. Instalar pg: `npm install pg`
+2. Cambiar configuración de base de datos en `backend/database.js`
+3. Actualizar `DATABASE_PATH` a connection string de PostgreSQL
+
+## 🚀 Despliegue
+
+### Opciones de Hosting
+
+**Backend + Frontend**:
+- Railway.app (recomendado - incluye PostgreSQL gratis)
+- Heroku (con addon PostgreSQL)
+- Render.com
+- DigitalOcean App Platform
+- AWS Elastic Beanstalk
+- Google Cloud Run
+
+### Ejemplo: Despliegue en Railway
+
+1. Crear cuenta en https://railway.app
+2. Crear nuevo proyecto desde GitHub
+3. Agregar PostgreSQL addon
+4. Configurar variables de entorno en Railway
+5. Deploy automático desde GitHub
+
+### Variables de Entorno en Producción
+
+Asegúrate de configurar TODAS las variables del archivo `.env.example` en tu plataforma de hosting.
+
+## 🔒 Seguridad
+
+- ✅ Las contraseñas de admin no se almacenan en la base de datos
+- ✅ Tokens únicos para cada acción (confirmación/cancelación)
+- ✅ Validación de emails
+- ✅ CORS configurado
+- ✅ Rate limiting recomendado para producción
+- ⚠️ No incluir `.env` en el repositorio
+- ⚠️ Usar HTTPS en producción
+- ⚠️ Cambiar `ADMIN_PASSWORD` en producción
+
+## 🛠️ Desarrollo
+
+### Estructura de la API
+
 ```javascript
-{
-  id: "timestamp",
-  ideaId: "string",                  // Associated product ID
-  name: "string",                    // Task/milestone name
-  description: "string",             // Task description
-  priority: "low|medium|high|critical",
-  status: "todo|in-progress|completed",
-  assignee: "string",                // Assigned team member
-  dueDate: "date string",            // Target completion date
-  dependencies: ["taskId"],          // Prerequisite tasks
-  createdAt: "ISO date string"
-}
+// Registrar asistente
+POST /api/register
+Body: { firstName, lastName, email }
+
+// Obtener asistentes (admin)
+GET /api/attendees?password=xxx
+
+// Confirmar asistencia
+GET /api/confirm/:token
+
+// Cancelar asistencia
+GET /api/cancel/:token
+
+// Obtener wallet pass
+GET /api/wallet/:id
+
+// Enviar recordatorios (admin)
+POST /api/send-reminders
+Headers: { X-Admin-Password: xxx }
 ```
 
-## Use Cases
+### Agregar Nuevos Campos
 
-### For R&D Teams
-- Track multiple drug candidates through development stages
-- Coordinate complex development activities across teams
-- Monitor clinical trial milestones and regulatory submissions
-- Manage API synthesis and formulation development timelines
+1. Actualizar schema en `backend/database.js`
+2. Agregar campos al formulario en `frontend/index.html`
+3. Actualizar validación en `backend/routes/api.js`
+4. Actualizar emails en `backend/services/email.js`
 
-### For Generic Development
-- Track bioequivalence studies and ANDA submissions
-- Manage formulation development and stability studies
-- Coordinate regulatory filings across multiple markets
-- Track patent challenges and exclusivity periods
+## 📝 Licencia
 
-### For Innovation Projects
-- Manage first-in-class drug development
-- Track IND/NDA submissions and clinical phases
-- Coordinate pre-clinical and clinical activities
-- Monitor orphan drug and fast-track designations
+MIT License - Úsalo libremente para tus eventos
 
-### For Project Managers
-- Get real-time visibility into development pipeline
-- Track budget and timeline adherence
-- Identify bottlenecks and dependencies
-- Generate progress reports for stakeholders
+## 🤝 Contribuir
 
-## Features in Detail
+Las contribuciones son bienvenidas. Por favor:
+1. Fork el proyecto
+2. Crea una rama para tu feature
+3. Commit tus cambios
+4. Push a la rama
+5. Abre un Pull Request
 
-### Responsive Design
-The interface adapts seamlessly to different screen sizes:
-- Desktop: Full three-column task board and multi-column product grid
-- Tablet: Optimized layouts with adjusted spacing
-- Mobile: Single-column layouts for easy navigation on-the-go
+## 📞 Soporte
 
-### Visual Feedback
-- Color-coded priority levels for regulatory urgency
-- Stage-specific badges for development phases
-- Progress indicators showing milestone completion
-- Hover effects and smooth transitions
-- Drag-and-drop visual cues for task management
+Para problemas o preguntas, abre un issue en el repositorio.
 
-### Data Management
-- Automatic saving to localStorage
-- Real-time updates across all views
-- Cascading deletes (deleting a product removes its tasks)
-- Form validation for required fields
-- Data integrity checks
+## ✨ Roadmap
 
-## Future Enhancements
+- [ ] Autenticación con OAuth para admin
+- [ ] Múltiples eventos en la misma instancia
+- [ ] Capacidad máxima de asistentes
+- [ ] Lista de espera
+- [ ] Personalización de emails con templates
+- [ ] Integración con servicios de calendario
+- [ ] Escaneo de QR codes para check-in
+- [ ] Aplicación móvil nativa
+- [ ] Integración con plataformas de pago
+- [ ] Multi-idioma
 
-Potential features for future versions:
-- Data export/import (JSON, CSV, Excel)
-- Integration with regulatory submission tracking systems
-- Collaboration features for distributed teams
-- Document attachment support for protocols and reports
-- Gantt chart view for timeline visualization
-- Advanced filtering by therapeutic area, stage, or team
-- Analytics and reporting dashboards
-- Custom fields for company-specific workflows
-- Email notifications for milestone deadlines
-- Integration with clinical trial management systems
-- Budget tracking and forecasting tools
-- Patent and exclusivity tracking
-- Competitive intelligence integration
+## 🙏 Agradecimientos
 
-## Regulatory Considerations
+Construido con:
+- Express.js
+- SQLite3
+- Nodemailer
+- QRCode
+- Node-cron
 
-This tool is designed for internal project management and planning purposes. It is not a validated system for:
-- Electronic submissions to regulatory agencies
-- GxP-compliant documentation
-- Clinical trial data management
-- Quality management system (QMS) activities
+---
 
-For regulatory submissions and GxP activities, please use appropriate validated systems.
-
-## Contributing
-
-This is an open project. Feel free to fork, modify, and enhance it for your organization's specific needs.
-
-## License
-
-MIT License - feel free to use this project for personal or commercial purposes.
-
-## Support
-
-For issues, questions, or feature requests, please open an issue in the repository.
-
-## Acknowledgments
-
-Built with modern web standards and best practices for the pharmaceutical development community. Designed to support the critical work of bringing life-saving medications from concept to patients.
+Hecho con ❤️ para la comunidad de eventos
