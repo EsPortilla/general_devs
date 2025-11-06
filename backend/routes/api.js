@@ -460,4 +460,44 @@ router.post('/send-reminders', async (req, res) => {
   }
 });
 
+/**
+ * GET /api/debug-env
+ * Debug endpoint to check environment variables configuration
+ * TEMPORARY - for troubleshooting only
+ */
+router.get('/debug-env', (req, res) => {
+  try {
+    const envCheck = {
+      hasSendGridKey: !!process.env.SENDGRID_API_KEY,
+      sendGridKeyPrefix: process.env.SENDGRID_API_KEY ? process.env.SENDGRID_API_KEY.substring(0, 4) : 'NOT_SET',
+      hasEmailHost: !!process.env.EMAIL_HOST,
+      hasEmailPort: !!process.env.EMAIL_PORT,
+      hasEmailUser: !!process.env.EMAIL_USER,
+      hasEmailPassword: !!process.env.EMAIL_PASSWORD,
+      emailFrom: process.env.EMAIL_FROM || 'NOT_SET',
+      appUrl: process.env.APP_URL || 'NOT_SET',
+      frontendUrl: process.env.FRONTEND_URL || 'NOT_SET',
+      nodeEnv: process.env.NODE_ENV || 'NOT_SET',
+      allEnvKeys: Object.keys(process.env).filter(key =>
+        key.includes('EMAIL') ||
+        key.includes('SENDGRID') ||
+        key.includes('SMTP')
+      )
+    };
+
+    res.json({
+      success: true,
+      config: envCheck,
+      recommendation: envCheck.hasSendGridKey
+        ? 'SendGrid is configured correctly ✅'
+        : 'SendGrid API Key is MISSING - add SENDGRID_API_KEY variable ❌'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
