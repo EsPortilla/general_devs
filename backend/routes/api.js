@@ -500,4 +500,71 @@ router.get('/debug-env', (req, res) => {
   }
 });
 
+/**
+ * POST /api/resend-email
+ * Resend confirmation email to an attendee
+ * Body: { email }
+ */
+router.post('/resend-email', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email is required'
+      });
+    }
+
+    // Get attendee
+    const attendee = await dbOperations.getAttendeeByEmail(email);
+
+    if (!attendee) {
+      return res.status(404).json({
+        success: false,
+        error: 'Email not found in registrations'
+      });
+    }
+
+    // Get or generate QR code
+    let qrCode = attendee.qr_code;
+    if (!qrCode) {
+      qrCode = await generateQRCode({
+        id: attendee.id,
+        firstName: attendee.first_name,
+        lastName: attendee.last_name,
+        email: attendee.email,
+        confirmationToken: attendee.confirmation_token,
+        registrationDate: attendee.registration_date
+      });
+      await dbOperations.updateQRCode(attendee.id, qrCode);
+    }
+
+    // Send confirmation email
+    await sendConfirmationEmail(
+      {
+        id: attendee.id,
+        firstName: attendee.first_name,
+        lastName: attendee.last_name,
+        email: attendee.email,
+        confirmationToken: attendee.confirmation_token,
+        cancellationToken: attendee.cancellation_token
+      },
+      qrCode
+    );
+
+    res.json({
+      success: true,
+      message: 'Confirmation email sent successfully!'
+    });
+
+  } catch (error) {
+    console.error('Error resending email:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to resend email: ' + error.message
+    });
+  }
+});
+
 module.exports = router;
