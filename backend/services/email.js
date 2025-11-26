@@ -1,23 +1,19 @@
 const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 
-// Create transporter based on configuration
-let transporter;
-
+// Initialize SendGrid if API key is available
+let usingSendGrid = false;
 if (process.env.SENDGRID_API_KEY) {
-  // Use SendGrid (recommended for Render.com and similar platforms)
-  console.log('Using SendGrid for email delivery');
-  transporter = nodemailer.createTransport({
-    host: 'smtp.sendgrid.net',
-    port: 587,
-    secure: false,
-    auth: {
-      user: 'apikey',
-      pass: process.env.SENDGRID_API_KEY,
-    },
-  });
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  usingSendGrid = true;
+  console.log('Using SendGrid HTTP API for email delivery');
 } else {
-  // Use traditional SMTP (Gmail, etc.)
   console.log('Using SMTP for email delivery');
+}
+
+// Create SMTP transporter as fallback (for local development with Gmail, etc.)
+let transporter = null;
+if (!usingSendGrid) {
   transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: parseInt(process.env.EMAIL_PORT || '587'),
@@ -27,17 +23,44 @@ if (process.env.SENDGRID_API_KEY) {
       pass: process.env.EMAIL_PASSWORD,
     },
   });
+
+  // Verify transporter configuration
+  transporter.verify((error, success) => {
+    if (error) {
+      console.error('Email transporter error:', error);
+      console.log('Email will still attempt to send on demand');
+    } else {
+      console.log('Email server is ready to send messages');
+    }
+  });
 }
 
-// Verify transporter configuration
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('Email transporter error:', error);
-    console.log('Email will still attempt to send on demand');
+/**
+ * Send email using SendGrid HTTP API or SMTP fallback
+ */
+async function sendEmail(mailOptions) {
+  if (usingSendGrid) {
+    // Use SendGrid HTTP API
+    const msg = {
+      to: mailOptions.to,
+      from: mailOptions.from || process.env.EMAIL_FROM,
+      subject: mailOptions.subject,
+      html: mailOptions.html,
+      attachments: mailOptions.attachments?.map(att => ({
+        content: att.path.split(',')[1], // Extract base64 from data URL
+        filename: att.filename,
+        type: 'image/png',
+        disposition: 'inline',
+        content_id: att.cid
+      }))
+    };
+
+    return await sgMail.send(msg);
   } else {
-    console.log('Email server is ready to send messages');
+    // Use SMTP (fallback for local development)
+    return await transporter.sendMail(mailOptions);
   }
-});
+}
 
 /**
  * Send confirmation email with QR code
@@ -152,7 +175,7 @@ async function sendConfirmationEmail(attendee, qrCodeDataURL) {
           <div class="qr-container">
             <h3>Tu Código QR de Entrada</h3>
             <p>Presenta este código QR el día del evento:</p>
-            <img src="${qrCodeDataURL}" alt="QR Code" class="qr-code" />
+            <img src="cid:qrcode" alt="QR Code" class="qr-code" />
             <p style="margin-top: 20px;">
               <a href="${walletUrl}" class="button secondary">📱 Guardar en Wallet</a>
             </p>
@@ -184,15 +207,15 @@ async function sendConfirmationEmail(attendee, qrCodeDataURL) {
       {
         filename: 'qr-code.png',
         path: qrCodeDataURL,
-        cid: 'qrcode' // Content ID for embedding
+        cid: 'qrcode'
       }
     ]
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Confirmation email sent:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const info = await sendEmail(mailOptions);
+    console.log('Confirmation email sent:', info);
+    return { success: true, info };
   } catch (error) {
     console.error('Error sending confirmation email:', error);
     throw error;
@@ -328,7 +351,7 @@ async function sendReminderEmail(attendee, qrCodeDataURL) {
 
           <div class="qr-container">
             <h3>Tu Código QR de Entrada</h3>
-            <img src="${qrCodeDataURL}" alt="QR Code" class="qr-code" />
+            <img src="cid:qrcode" alt="QR Code" class="qr-code" />
             <p style="margin-top: 20px;">
               <a href="${walletUrl}" class="button secondary">📱 Guardar en Wallet</a>
             </p>
@@ -364,9 +387,9 @@ async function sendReminderEmail(attendee, qrCodeDataURL) {
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Reminder email sent:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const info = await sendEmail(mailOptions);
+    console.log('Reminder email sent:', info);
+    return { success: true, info };
   } catch (error) {
     console.error('Error sending reminder email:', error);
     throw error;
@@ -443,9 +466,9 @@ async function sendCancellationEmail(attendee) {
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Cancellation email sent:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const info = await sendEmail(mailOptions);
+    console.log('Cancellation email sent:', info);
+    return { success: true, info };
   } catch (error) {
     console.error('Error sending cancellation email:', error);
     throw error;
